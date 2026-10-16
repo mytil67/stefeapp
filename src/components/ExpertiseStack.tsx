@@ -23,17 +23,17 @@ export const ExpertiseStack: React.FC = () => {
   })
 
   return (
-    <section id="expertises" className="py-24 relative bg-zinc-950/40">
+    <section id="expertises" className="py-24 relative bg-stone-100/50 dark:bg-stone-900/50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4">
-            <span>Arsenal Technique</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700 text-teal-700 dark:text-teal-400 text-xs font-semibold uppercase tracking-wider mb-4">
+            <span>Compétences</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-zinc-100 tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight">
             Des fondations solides, de l'interface au Système d'Information
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-zinc-400">
+          <p className="mt-4 text-base sm:text-lg text-stone-500 dark:text-stone-400">
             Une boîte à outils forgée par la pratique quotidienne du développement et la responsabilité de systèmes d'information d'entreprise.
           </p>
         </div>
@@ -41,7 +41,7 @@ export const ExpertiseStack: React.FC = () => {
         {/* Filters & Search bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-10">
           {/* Category Tabs */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-900/90 border border-zinc-800/80 overflow-x-auto max-w-full">
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 overflow-x-auto max-w-full">
             {categories.map((cat) => {
               const Icon = cat.icon
               const isActive = activeTab === cat.id
@@ -51,11 +51,11 @@ export const ExpertiseStack: React.FC = () => {
                   onClick={() => setActiveTab(cat.id)}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-emerald-sm'
-                      : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
+                      ? 'bg-white dark:bg-stone-700 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-600 shadow-sm'
+                      : 'text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-transparent'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-emerald-400' : 'text-zinc-500'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-stone-400 dark:text-stone-500'}`} />
                   <span>{cat.label}</span>
                 </button>
               )
@@ -64,13 +64,13 @@ export const ExpertiseStack: React.FC = () => {
 
           {/* Search input */}
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 dark:text-stone-500" />
             <input
               type="text"
               placeholder="Filtrer une compétence..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 rounded-xl bg-zinc-900/90 border border-zinc-800/80 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 transition-all"
+              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-xs text-stone-700 dark:text-stone-200 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:border-teal-400 dark:focus:border-teal-500 focus:ring-1 focus:ring-teal-400/30 transition-all"
             />
           </div>
         </div>
@@ -80,22 +80,22 @@ export const ExpertiseStack: React.FC = () => {
           {filteredSkills.map((skill, index) => (
             <div
               key={index}
-              className={`p-5 rounded-xl glass-card glass-card-hover border transition-all relative ${
-                skill.highlight ? 'border-emerald-500/30 bg-emerald-950/10' : 'border-zinc-800/80'
+              className={`p-5 rounded-xl card card-hover transition-all relative ${
+                skill.highlight ? 'border-teal-200 dark:border-teal-700 bg-teal-50/50 dark:bg-teal-900/20' : ''
               }`}
             >
               <div className="flex items-start justify-between gap-3 mb-2">
-                <h3 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+                <h3 className="text-sm font-bold text-stone-800 dark:text-stone-100 flex items-center gap-2">
                   {skill.name}
                   {skill.highlight && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" />
                   )}
                 </h3>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-emerald-400 font-medium shrink-0">
+                <span className="text-[11px] px-2 py-0.5 rounded bg-teal-50 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700 text-teal-700 dark:text-teal-300 font-medium shrink-0">
                   {skill.level}
                 </span>
               </div>
-              <p className="text-xs text-zinc-400 leading-relaxed">
+              <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
                 {skill.description}
               </p>
             </div>
@@ -103,7 +103,7 @@ export const ExpertiseStack: React.FC = () => {
         </div>
 
         {filteredSkills.length === 0 && (
-          <div className="text-center py-12 text-sm text-zinc-500">
+          <div className="text-center py-12 text-sm text-stone-400 dark:text-stone-500">
             Aucune compétence ne correspond à votre recherche.
           </div>
         )}
