@@ -8,18 +8,22 @@ export default {
   theme: {
     extend: {
       colors: {
-        emerald: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          300: '#6ee7b7',
-          400: '#34d399',
-          500: '#10b981',
-          600: '#059669',
-          700: '#047857',
-          800: '#065f46',
-          900: '#064e3b',
-          950: '#022c22',
+        teal: {
+          50: '#E0F2F1',
+          100: '#B2DFDB',
+          200: '#80CBC4',
+          300: '#4DB6AC',
+          400: '#14919B',
+          500: '#0D7377',
+          600: '#0B6165',
+          700: '#094F53',
+          800: '#073D40',
+          900: '#052B2E',
+          950: '#031A1C',
+        },
+        sunset: {
+          light: '#F4A261',
+          DEFAULT: '#E76F51',
         },
       },
       fontFamily: {
@@ -27,20 +31,12 @@ export default {
         mono: ['"JetBrains Mono"', 'Fira Code', 'monospace'],
       },
       boxShadow: {
-        'emerald-glow': '0 0 50px -10px rgba(16, 185, 129, 0.25)',
-        'emerald-glow-lg': '0 0 80px -15px rgba(16, 185, 129, 0.35)',
-        'emerald-sm': '0 0 20px -3px rgba(16, 185, 129, 0.3)',
+        'card': '0 1px 3px rgba(0,0,0,0.08)',
+        'card-hover': '0 8px 25px -5px rgba(0,0,0,0.1)',
       },
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'float': 'float 6s ease-in-out infinite',
       },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' },
-        }
-      }
     },
   },
   plugins: [],
