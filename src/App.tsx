@@ -15,7 +15,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden font-sans flex flex-col">
+    <div className="min-h-screen relative overflow-x-hidden font-sans flex flex-col">
       <Navbar theme={theme} onToggleTheme={toggle} />
 
       <main className="flex-1 flex flex-col items-center justify-center py-20 sm:py-24 gap-8 sm:gap-10">

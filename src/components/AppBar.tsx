@@ -25,23 +25,25 @@ export const AppBar: React.FC<AppBarProps> = ({ selectedId, onSelect }) => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.35, delay: 1.2 + i * 0.06, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
           >
             {/* App icon */}
-            <div
-              className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xs sm:text-sm tracking-tight transition-all duration-300 ${
+            <motion.div
+              className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xs sm:text-sm tracking-tight ${
                 isSelected
-                  ? 'shadow-lg ring-2 ring-offset-2 ring-offset-stone-50 dark:ring-offset-stone-900 scale-110'
-                  : 'shadow-md group-hover:shadow-lg'
+                  ? 'shadow-lg ring-2 ring-offset-2 ring-offset-stone-50 dark:ring-offset-stone-900'
+                  : 'shadow-md'
               }`}
               style={{
                 backgroundColor: app.color,
-                ...(isSelected ? { ringColor: app.color } : {}),
+                ...(isSelected ? { ['--tw-ring-color' as string]: app.color } : {}),
               }}
+              whileHover={{ scale: 1.12, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              animate={isSelected ? { scale: 1.1 } : { scale: 1 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             >
               {app.name.slice(0, 3)}
-            </div>
+            </motion.div>
 
             {/* App label */}
             <span className={`text-[10px] sm:text-[11px] font-medium transition-colors duration-200 ${

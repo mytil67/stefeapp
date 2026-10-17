@@ -5,7 +5,7 @@ export const Hero: React.FC = () => {
   return (
     <div className="text-center mb-8">
       <motion.h1
-        className="text-6xl sm:text-7xl md:text-8xl font-extrabold tracking-tighter"
+        className="text-6xl sm:text-7xl md:text-8xl font-extrabold tracking-tight px-2"
         initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
