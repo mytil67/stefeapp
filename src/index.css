@@ -3,16 +3,25 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: #FAFAF9;
     color: #1C1917;
     overflow-x: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
 
   .dark body {
     background-color: #1C1917;
     color: #FAFAF9;
+  }
+
+  ::selection {
+    background-color: rgba(13, 115, 119, 0.15);
+    color: inherit;
   }
 }
 
@@ -21,22 +30,14 @@
   background: #FFFFFF;
   border: 1px solid #E7E5E4;
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .dark .card {
   background: #292524;
   border-color: #44403C;
-}
-
-.card-hover:hover {
-  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.dark .card-hover:hover {
-  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* Teal gradient text */

@@ -6,7 +6,11 @@
       "Bash(npx tsc:*)",
       "WebFetch(domain:bauhaus.stefe.app)",
       "WebFetch(domain:vox-cloud.com)",
-      "WebFetch(domain:studio.stefe.app)"
+      "WebFetch(domain:studio.stefe.app)",
+      "Bash(npm search:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npm info:*)",
+      "Bash(npm install:*)"
     ]
   }
 }
