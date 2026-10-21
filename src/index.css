@@ -504,6 +504,8 @@ a { text-decoration: none; }
   .board-columns, .departure-row { grid-template-columns: 62px 1fr 1.35fr 42px; }
   .board-columns span:nth-child(4), .board-status { display: none; }
   .detail-layout { grid-template-columns: 1fr; gap: 36px; margin-top: 50px; }
+  .nodrive-grid { grid-template-columns: 1fr; }
+  .nd-features { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 620px) {
@@ -532,10 +534,8 @@ a { text-decoration: none; }
   .departures-heading { margin-top: -20px; padding: 0 14px; }
   .departures-heading h2 { font-size: 11.5vw; letter-spacing: .06em; }
   .departure-board { padding: 9px; border-radius: 14px; }
-  .experiments { padding: 78px 24px; }
-  .experiments-grid { grid-template-columns: 1fr; gap: 40px; }
-  .experiment-stage { min-height: 310px; border-radius: 18px; }
-  .experiments-heading h2 { font-size: clamp(48px, 15vw, 76px); }
+  .nodrive-showcase { padding: 68px 18px; }
+  .nd-window__dots { display: none; }
   .board-columns, .departure-row { grid-template-columns: 45px 96px minmax(0, 1fr) 32px; gap: 7px; }
   .board-columns { padding: 0 7px; }
   .departure-row { min-height: 68px; padding: 7px; }

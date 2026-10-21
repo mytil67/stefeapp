@@ -1,90 +1,309 @@
 import { useState } from 'react'
-import { ArrowUpRight, KeyRound, ShieldCheck, Terminal } from 'lucide-react'
+import { ArrowUpRight, Check, Copy, Eye, FileText, Lock, ShieldCheck, Terminal, Trash2, Upload, UserX } from 'lucide-react'
 
-const FEATURES = [
+type StepId = 'send' | 'code' | 'receive'
+type ContentMode = 'files' | 'text'
+
+const STEPS: {
+  id: StepId
+  label: string
+  title: string
+  text: string
+}[] = [
   {
-    id: 'direction',
-    label: '01 · Principe',
-    stageCaption: '01 · CODE COURT · AB3K7P',
-    stageBadge: 'AB3K7P · déchiffrer',
-    title: 'Un code à 6 caractères, zéro compte',
-    text: 'Déposez un fichier, choisissez un mot de passe et obtenez un code court à transmettre oralement ou par message. Le destinataire saisit le code et le mot de passe sur nodrive.cc pour récupérer son fichier.',
-    icon: KeyRound,
+    id: 'send',
+    label: '01 · Envoyer (Fichiers ou Texte)',
+    title: 'Glissez un fichier ou collez un snippet',
+    text: 'Choisissez entre le mode Fichiers (accent bleu, jusqu’à 25 Mo, multi-fichiers) ou le mode Texte façon pastebin chiffré (accent orange). Une passphrase robuste de 24 caractères est générée automatiquement.',
   },
   {
-    id: 'interaction',
-    label: '02 · Sécurité',
-    stageCaption: '02 · AES-256-GCM · PBKDF2 600K',
-    stageBadge: 'chiffré côté client',
-    title: 'Chiffré dans le navigateur, détruit après lecture',
-    text: 'Chiffrement AES-256-GCM via Web Crypto API et dérivation PBKDF2 (600 000 itérations SHA-256). Le serveur ne voit jamais le mot de passe ni la clé, et le fichier est supprimé dès le premier téléchargement.',
-    icon: ShieldCheck,
+    id: 'code',
+    label: '02 · Code court & QR Code',
+    title: 'Un code à 6 caractères, rien d’autre',
+    text: 'Le chiffrement AES-256-GCM (PBKDF2 · 600 000 itérations SHA-256) s’exécute dans votre navigateur. Vous obtenez un code court (ex. AB3K7P), un QR code à scanner et un jeton de révocation immédiate.',
   },
   {
-    id: 'data',
-    label: '03 · Web & CLI',
-    stageCaption: '03 · NPX NODRIVE-CLI SEND',
-    stageBadge: 'npx nodrive-cli',
-    title: 'Depuis le navigateur ou le terminal',
-    text: 'Utilisable sur nodrive.cc ou en ligne de commande via npx nodrive-cli send fichier.pdf (Node.js ≥ 18, zéro dépendance), avec jeton de révocation 128 bits pour annuler un transfert à tout moment.',
-    icon: Terminal,
+    id: 'receive',
+    label: '03 · Recevoir & CLI',
+    title: 'Déchiffré à l’arrivée, supprimé aussitôt',
+    text: 'Sur l’autre machine — via nodrive.cc ou en terminal avec npx nodrive-cli — les noms de fichiers restent masqués tant que la preuve de mot de passe (verifier) n’est pas validée. Dès le téléchargement terminé, le blob est détruit.',
+  },
+]
+
+const PILLARS = [
+  {
+    icon: Lock,
+    label: 'Chiffré AES-256',
+    desc: 'Chiffré dans votre navigateur avant envoi',
+  },
+  {
+    icon: FileText,
+    label: 'Fichiers & texte',
+    desc: 'Plusieurs fichiers, ou un texte façon pastebin',
+  },
+  {
+    icon: Trash2,
+    label: 'Usage unique',
+    desc: 'Supprimé dès le téléchargement — valide 1 h',
+  },
+  {
+    icon: UserX,
+    label: 'Sans compte',
+    desc: 'Aucune inscription ni installation requise',
   },
 ]
 
 export const Experiments = () => {
-  const [activeId, setActiveId] = useState(FEATURES[0].id)
-  const active = FEATURES.find((feature) => feature.id === activeId) ?? FEATURES[0]
+  const [activeStep, setActiveStep] = useState<StepId>('send')
+  const [mode, setMode] = useState<ContentMode>('files')
+  const [copied, setCopied] = useState<string | null>(null)
+  const active = STEPS.find((step) => step.id === activeStep) ?? STEPS[0]
+
+  const copyDemo = (value: string, key: string) => {
+    navigator.clipboard?.writeText(value).catch(() => {})
+    setCopied(key)
+    window.setTimeout(() => setCopied(null), 1800)
+  }
 
   return (
-    <section className="experiments" id="experiences" aria-labelledby="experiences-title">
-      <div className="experiments-heading">
-        <p>FOCUS OUTIL · OPEN SOURCE</p>
-        <h2 id="experiences-title">NoDrive,<br />zéro trace.</h2>
-        <span>Transfert de fichiers temporaire et chiffré de bout en bout entre deux machines — sans compte, sans installation, depuis le navigateur ou le terminal.</span>
-      </div>
-      <div
-        className="experiments-grid"
-        id={`panel-${active.id}`}
-        role="tabpanel"
-        aria-labelledby={`tab-${active.id}`}
-      >
-        <div className="experiment-stage" data-example={active.id} aria-live="polite">
-          <div className="stage-glow" />
-          <div className="stage-orbits"><i /><i /><i /><b /></div>
-          <div className="stage-cursor"><active.icon /><span>{active.stageBadge}</span></div>
-          <div className="stage-bars"><i /><i /><i /><i /><i /><i /></div>
-          <div className="stage-caption">{active.stageCaption}</div>
+    <section
+      className="nodrive-showcase"
+      id="experiences"
+      data-nd-mode={mode}
+      aria-labelledby="experiences-title"
+    >
+      <div className="nodrive-glow" aria-hidden="true" />
+      <div className="nodrive-container">
+        <div className="nodrive-header">
+          <span className="nodrive-eyebrow">TRANSFERT DE FICHIERS · OPEN SOURCE</span>
+          <h2 id="experiences-title" className="nodrive-title">NoDrive</h2>
+          <p className="nodrive-subtitle">
+            Envoyez fichiers, commandes ou bouts de code d’une machine à une autre.<br />
+            <strong>Un code. Un mot de passe. C’est tout.</strong>
+          </p>
         </div>
-        <div className="experiment-copy">
-          <active.icon aria-hidden="true" />
-          <p className="experiment-label">{active.label}</p>
-          <h3>{active.title}</h3>
-          <p>{active.text}</p>
-          <div className="experiment-tabs" role="tablist" aria-label="Fonctionnalités de NoDrive">
-            {FEATURES.map((feature) => (
-              <button
-                key={feature.id}
-                id={`tab-${feature.id}`}
-                type="button"
-                role="tab"
-                aria-selected={activeId === feature.id}
-                aria-controls={`panel-${feature.id}`}
-                className={activeId === feature.id ? 'is-active' : ''}
-                onClick={() => setActiveId(feature.id)}
-              >
-                {feature.label}
-              </button>
-            ))}
+
+        <div
+          className="nodrive-grid"
+          id={`panel-${active.id}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${active.id}`}
+        >
+          {/* Authentic NoDrive UI Window */}
+          <div className="nd-window" aria-live="polite">
+            <div className="nd-window__bar">
+              <div className="nd-window__dots" aria-hidden="true">
+                <span /><span /><span />
+              </div>
+              <a href="https://nodrive.cc" target="_blank" rel="noreferrer" className="nd-window__url">
+                <Lock aria-hidden="true" /> nodrive.cc/{activeStep === 'receive' ? 'receive/AB3K7P' : 'send'}
+              </a>
+              <div className="nd-mode-Switch" role="group" aria-label="Mode de démonstration">
+                <button
+                  type="button"
+                  className={mode === 'files' ? 'is-active' : ''}
+                  onClick={() => setMode('files')}
+                >
+                  Fichiers
+                </button>
+                <button
+                  type="button"
+                  className={mode === 'text' ? 'is-active' : ''}
+                  onClick={() => setMode('text')}
+                >
+                  Texte
+                </button>
+              </div>
+            </div>
+
+            <div className="nd-window__body">
+              {activeStep === 'send' && (
+                <div className="nd-card">
+                  <div className="nd-mode-toggle">
+                    <button
+                      type="button"
+                      className={mode === 'files' ? 'is-active' : ''}
+                      onClick={() => setMode('files')}
+                    >
+                      <FileText aria-hidden="true" /> Fichiers
+                    </button>
+                    <button
+                      type="button"
+                      className={mode === 'text' ? 'is-active' : ''}
+                      onClick={() => setMode('text')}
+                    >
+                      <Terminal aria-hidden="true" /> Texte
+                    </button>
+                  </div>
+
+                  <div className="nd-step">
+                    <div className="nd-step__label">
+                      <span className="nd-step__num">1</span>
+                      <span>{mode === 'text' ? 'COLLER VOTRE TEXTE' : 'SÉLECTIONNER DES FICHIERS'}</span>
+                    </div>
+                    {mode === 'files' ? (
+                      <div className="nd-dropzone">
+                        <Upload className="nd-dropzone__icon" aria-hidden="true" />
+                        <p className="nd-dropzone__file">architecture-strasbourg.pdf · 4,2 Mo</p>
+                        <span className="nd-dropzone__sub">2 fichiers sélectionnés · Cliquez pour en ajouter</span>
+                      </div>
+                    ) : (
+                      <pre className="nd-textarea">
+                        <code>{`export NODRIVE_URL=https://nodrive.cc\nnpx nodrive-cli send rapport.pdf`}</code>
+                      </pre>
+                    )}
+                  </div>
+
+                  <div className="nd-divider" />
+
+                  <div className="nd-step">
+                    <div className="nd-step__label">
+                      <span className="nd-step__num">2</span>
+                      <span>CHOISIR UN MOT DE PASSE</span>
+                    </div>
+                    <div className="nd-input-row">
+                      <code>H7QK-N3VA-9ZDR-2MGP-WT8B</code>
+                      <Eye aria-hidden="true" />
+                    </div>
+                    <p className="nd-hint">
+                      <span className="nd-hint__ok">✓</span> 12 caractères minimum. Passphrase générée localement.
+                    </p>
+                  </div>
+
+                  <div className="nd-cta-bar">
+                    <Upload aria-hidden="true" /> Chiffrer et envoyer
+                  </div>
+                </div>
+              )}
+
+              {activeStep === 'code' && (
+                <div className="nd-card nd-card--center">
+                  <div className="nd-badge-ok" aria-hidden="true">✓</div>
+                  <p className="nd-card__kicker">
+                    {mode === 'text' ? 'TEXTE CHIFFRÉ ET ENVOYÉ' : 'FICHIERS CHIFFRÉS ET ENVOYÉS'}
+                  </p>
+
+                  <div className="nd-code-box">
+                    <span className="nd-code-box__label">CODE DE TRANSFERT</span>
+                    <div className="nd-code-box__value">AB3K7P</div>
+                    <div className="nd-code-box__actions">
+                      <button type="button" onClick={() => copyDemo('AB3K7P', 'code')}>
+                        {copied === 'code' ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+                        {copied === 'code' ? 'Copié' : 'Copier le code'}
+                      </button>
+                      <button type="button" onClick={() => copyDemo('https://nodrive.cc/receive/AB3K7P', 'link')}>
+                        {copied === 'link' ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+                        {copied === 'link' ? 'Copié' : 'Copier le lien'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="nd-pass-box">
+                    <span className="nd-code-box__label">MOT DE PASSE</span>
+                    <code>H7QK-N3VA-9ZDR-2MGP-WT8B</code>
+                  </div>
+
+                  <div className="nd-meta-row">
+                    <span><ShieldCheck aria-hidden="true" /> AES-256-GCM · PBKDF2 600K</span>
+                    <span className="nd-cancel-pill">Annuler ce transfert</span>
+                  </div>
+                </div>
+              )}
+
+              {activeStep === 'receive' && (
+                <div className="nd-card">
+                  <div className="nd-receive-preview">
+                    <div>
+                      <p className="nd-receive-preview__title">
+                        {mode === 'text' ? 'Texte chiffré' : '2 fichiers · 4,2 Mo'}
+                      </p>
+                      <p className="nd-receive-preview__hidden">
+                        Noms affichés après vérification du mot de passe
+                      </p>
+                    </div>
+                    <span className="nd-expiry-badge">Usage unique · 59 min</span>
+                  </div>
+
+                  <div className="nd-terminal">
+                    <div className="nd-terminal__head">
+                      <Terminal aria-hidden="true" />
+                      <span>CLI · Node.js ≥ 18 · zéro dépendance</span>
+                    </div>
+                    <pre>
+                      <code>
+{`$ npx nodrive-cli receive AB3K7P -p "H7QK-N3VA-9ZDR-2MGP-WT8B"
+✔ Vérification PBKDF2 (600 000 itérations)... OK
+✔ Déchiffrement AES-256-GCM en mémoire... OK
+✔ Enregistré : ./architecture-strasbourg.pdf (supprimé du serveur)`}
+                      </code>
+                    </pre>
+                  </div>
+
+                  <div className="nd-cta-bar">
+                    {mode === 'text' ? 'Déchiffrer et afficher' : 'Télécharger et déchiffrer'}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="experiment-links">
-            <a href="https://nodrive.cc" target="_blank" rel="noreferrer" className="experiment-cta">
-              Ouvrir nodrive.cc <ArrowUpRight aria-hidden="true" />
-            </a>
-            <a href="https://github.com/mytil67/nodrive" target="_blank" rel="noreferrer" className="experiment-cta experiment-cta--ghost">
-              Code source GitHub <ArrowUpRight aria-hidden="true" />
-            </a>
+
+          {/* Right column: interactive steps + links */}
+          <div className="nodrive-copy">
+            <div className="nodrive-steps" role="tablist" aria-label="Étapes de fonctionnement de NoDrive">
+              {STEPS.map((step) => (
+                <button
+                  key={step.id}
+                  id={`tab-${step.id}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeStep === step.id}
+                  aria-controls={`panel-${step.id}`}
+                  className={`nodrive-step-tab ${activeStep === step.id ? 'is-active' : ''}`}
+                  onClick={() => setActiveStep(step.id)}
+                >
+                  <span className="nodrive-step-tab__label">{step.label}</span>
+                  <strong>{step.title}</strong>
+                  <p>{step.text}</p>
+                </button>
+              ))}
+            </div>
+
+            <div className="nodrive-actions">
+              <a href="https://nodrive.cc" target="_blank" rel="noreferrer" className="nd-action-card nd-action-card--primary">
+                <span className="nd-action-card__icon" aria-hidden="true">
+                  <Upload />
+                </span>
+                <span className="nd-action-card__body">
+                  <strong>Ouvrir nodrive.cc</strong>
+                  <small>Fichiers ou texte — chiffrés et partagés en quelques secondes</small>
+                </span>
+                <ArrowUpRight className="nd-action-card__arrow" aria-hidden="true" />
+              </a>
+
+              <a href="https://github.com/mytil67/nodrive" target="_blank" rel="noreferrer" className="nd-action-card nd-action-card--secondary">
+                <span className="nd-action-card__icon" aria-hidden="true">
+                  <Terminal />
+                </span>
+                <span className="nd-action-card__body">
+                  <strong>github.com/mytil67/nodrive</strong>
+                  <small>Code source, documentation architecture & package nodrive-cli</small>
+                </span>
+                <ArrowUpRight className="nd-action-card__arrow" aria-hidden="true" />
+              </a>
+            </div>
           </div>
         </div>
+
+        {/* Authentic NoDrive 4-feature strip */}
+        <ul className="nd-features" aria-label="Caractéristiques de NoDrive">
+          {PILLARS.map(({ icon: Icon, label, desc }) => (
+            <li key={label} className="nd-feature">
+              <span className="nd-feature__icon" aria-hidden="true"><Icon /></span>
+              <span className="nd-feature__label">{label}</span>
+              <span className="nd-feature__desc">{desc}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   )
