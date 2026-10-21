@@ -1,86 +1,48 @@
-import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { APPS } from '../data/content'
+import { KeyboardEvent as ReactKeyboardEvent, useEffect, useRef } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, X } from 'lucide-react'
+import { APPS } from '../data/content'
 
-interface AppDetailProps {
-  selectedId: string | null
-  onClose: () => void
-}
+interface AppDetailProps { selectedId: string | null; onClose: () => void }
 
-export const AppDetail: React.FC<AppDetailProps> = ({ selectedId, onClose }) => {
-  const app = APPS.find((a) => a.id === selectedId)
+export const AppDetail = ({ selectedId, onClose }: AppDetailProps) => {
+  const app = APPS.find((item) => item.id === selectedId)
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLElement>(null)
+  const projectIndex = app ? APPS.indexOf(app) + 1 : 0
 
-  return (
-    <div className="flex items-center justify-center px-4 min-h-[180px]">
-      <AnimatePresence mode="wait">
-        {app ? (
-          <motion.div
-            key={app.id}
-            className="w-full max-w-lg rounded-2xl p-6 sm:p-8 relative overflow-hidden"
-            style={{
-              background: `linear-gradient(135deg, ${app.color}08, ${app.color}15)`,
-              border: `1px solid ${app.color}30`,
-            }}
-            initial={{ opacity: 0, y: 15, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.97 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {/* Close button */}
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-300 hover:bg-stone-200/50 dark:hover:bg-stone-700/50 transition-all cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
+  useEffect(() => {
+    if (!app) return
+    const previousFocus = document.activeElement as HTMLElement | null
+    const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && onClose()
+    document.body.classList.add('dialog-open')
+    window.addEventListener('keydown', closeOnEscape)
+    closeRef.current?.focus()
+    return () => {
+      document.body.classList.remove('dialog-open')
+      window.removeEventListener('keydown', closeOnEscape)
+      previousFocus?.focus()
+    }
+  }, [app, onClose])
 
-            {/* Color dot + name */}
-            <div className="flex items-center gap-3 mb-3">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: app.color }}
-              />
-              <h3 className="text-xl font-bold text-stone-900 dark:text-stone-50">
-                {app.name}
-              </h3>
-              <span className="text-xs font-medium text-stone-400 dark:text-stone-500">
-                {app.tagline}
-              </span>
-            </div>
+  const trapFocus = (event: ReactKeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Tab' || !panelRef.current) return
+    const focusable = [...panelRef.current.querySelectorAll<HTMLElement>('button, a[href]')]
+    if (!focusable.length) return
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+    if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+  }
 
-            {/* Description */}
-            <p className="text-sm leading-relaxed text-stone-600 dark:text-stone-300 mb-4">
-              {app.description}
-            </p>
-
-            {/* Link if available */}
-            {app.url && (
-              <a
-                href={app.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors duration-200"
-                style={{ color: app.color }}
-              >
-                <span>Voir le projet</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </a>
-            )}
-          </motion.div>
-        ) : (
-          <motion.p
-            key="placeholder"
-            className="text-sm text-stone-300 dark:text-stone-600 text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            Cliquez sur une app pour en savoir plus
-          </motion.p>
-        )}
-      </AnimatePresence>
-    </div>
-  )
+  return <AnimatePresence>{app && (
+    <motion.div className="detail-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <motion.article ref={panelRef} onKeyDown={trapFocus} className={`detail-panel detail-panel--${app.tone}`} role="dialog" aria-modal="true" aria-labelledby="detail-title" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', stiffness: 260, damping: 28 }}>
+        <button ref={closeRef} className="detail-close" onClick={onClose} aria-label="Fermer"><X /></button>
+        <div className="detail-titlebar"><span>Carte d’embarquement numérique</span><span>STRASBOURG · VOIE {String(projectIndex).padStart(2, '0')}</span></div>
+        <div className="detail-code">DESTINATION · {app.id.toUpperCase()}</div>
+        <div className="detail-layout"><div><span className="detail-category">{app.tagline}</span><h3 id="detail-title">{app.name}</h3></div><div className="detail-copy"><span className="detail-ready">Le projet</span><p>{app.description}</p>{app.url && <a href={app.url} target="_blank" rel="noreferrer">Découvrir le projet <ArrowUpRight /></a>}</div></div>
+      </motion.article>
+    </motion.div>
+  )}</AnimatePresence>
 }

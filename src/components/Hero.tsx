@@ -1,39 +1,56 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { ArrowDownRight, Mail } from 'lucide-react'
+import { CityScene } from './CityScene'
 
-export const Hero: React.FC = () => {
+interface HeroProps { selectedMonth: number }
+
+export const Hero = ({ selectedMonth }: HeroProps) => {
+  const { scrollY } = useScroll()
+  const copyY = useTransform(scrollY, [0, 700], [0, -35])
+
   return (
-    <div className="text-center mb-8">
-      <motion.h1
-        className="text-6xl sm:text-7xl md:text-8xl font-extrabold tracking-tight px-2"
-        initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
-        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <span className="bg-gradient-to-r from-teal-600 via-teal-500 to-teal-400 dark:from-teal-300 dark:via-teal-400 dark:to-teal-500 bg-clip-text text-transparent">
-          Stefe
-        </span>
-      </motion.h1>
-
-      {/* Sunset line */}
+  <section className="hero-wrap" aria-labelledby="hero-title">
+    <div className="hero">
+      <CityScene selectedMonth={selectedMonth} />
+      <div className="hero-content">
       <motion.div
-        className="mx-auto mt-3 h-1 rounded-full"
-        style={{ background: 'linear-gradient(90deg, #F4A261, #E76F51, #F4A261)' }}
-        initial={{ width: 0, opacity: 0 }}
-        animate={{ width: 64, opacity: 1 }}
-        transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      />
-
-      <motion.p
-        className="mt-4 text-sm sm:text-base font-medium tracking-wide"
+        className="hero-text"
+        style={{ y: copyY }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+      >
+        <h1 id="hero-title">Stefe</h1>
+        <p className="hero-vibe">Responsable informatique · Vibe codeuse</p>
+      </motion.div>
+      <motion.div
+        className="hero-bottom"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.8 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
       >
-        <span className="text-stone-400 dark:text-stone-500">Responsable informatique</span>
-        <span className="text-teal-500 dark:text-teal-400 mx-2">&</span>
-        <span className="text-stone-400 dark:text-stone-500">développeuse</span>
-      </motion.p>
+        <div className="hero-meta hero-meta--tagline">
+          <span>STRASBOURG · FR</span>
+          <p className="hero-tagline">Le numérique, simplement utile.</p>
+        </div>
+        <div className="hero-center-actions">
+          <a href="#realisations" className="hero-scroll" aria-label="Découvrir les réalisations">
+            <ArrowDownRight aria-hidden="true" />
+          </a>
+          <a href="mailto:stefe@stefe.app" className="hero-contact-cta">
+            <Mail aria-hidden="true" /> Me contacter
+          </a>
+        </div>
+        <div className="hero-meta hero-meta--intro">
+          <span>CE QUE JE FAIS</span>
+          <p className="hero-intro">
+            Je transforme les besoins du terrain en produits numériques clairs,
+            fiables et agréables à utiliser.
+          </p>
+        </div>
+      </motion.div>
+      </div>
     </div>
+  </section>
   )
 }

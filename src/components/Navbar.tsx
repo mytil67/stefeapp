@@ -1,41 +1,47 @@
-import React, { useState, useEffect } from 'react'
-import { Sun, Moon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { ChevronsUp, Moon, Sun } from 'lucide-react'
+import { AmbiencePicker } from './AmbiencePicker'
 
 interface NavbarProps {
   theme: 'light' | 'dark'
   onToggleTheme: () => void
+  currentMonth: number
+  selectedMonth: number
+  onSelectMonth: (month: number) => void
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ theme, onToggleTheme }) => {
+export const Navbar = ({ theme, onToggleTheme, currentMonth, selectedMonth, onSelectMonth }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const update = () => setScrolled(window.scrollY > 48)
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    return () => window.removeEventListener('scroll', update)
   }, [])
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/85 dark:bg-stone-900/85 backdrop-blur-md border-b border-stone-200 dark:border-stone-700 py-3 shadow-sm'
-          : 'bg-transparent py-5'
-      }`}
+  <>
+  <header className={`topbar ${scrolled ? 'scrolled' : ''}`}>
+    <nav className="topbar-right">
+      <a href="#realisations">Projets</a>
+      <a href="#experiences">Expériences</a>
+      <a href="#contact">Contact</a>
+      <AmbiencePicker currentMonth={currentMonth} selectedMonth={selectedMonth} onSelect={onSelectMonth} />
+      <button onClick={onToggleTheme} aria-label="Basculer le thème" className="theme-toggle">
+        {theme === 'light' ? <Moon /> : <Sun />}
+      </button>
+    </nav>
+  </header>
+    <button
+      type="button"
+      className={`back-to-top ${scrolled ? 'is-visible' : ''}`}
+      aria-label="Remonter en haut de la page"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
     >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-        <a href="#" className="font-bold text-stone-900 dark:text-stone-50 tracking-tight text-lg hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
-          Stefe<span className="text-teal-600 dark:text-teal-400">.</span>
-        </a>
-
-        <button
-          onClick={onToggleTheme}
-          className="p-2 rounded-lg text-stone-400 dark:text-stone-500 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all cursor-pointer"
-          aria-label="Basculer le thème"
-        >
-          {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-        </button>
-      </div>
-    </header>
+      <ChevronsUp aria-hidden="true" />
+      <span>Haut</span>
+    </button>
+  </>
   )
 }

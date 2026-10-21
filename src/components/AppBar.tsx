@@ -1,61 +1,78 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import { APPS, AppProject } from '../data/content'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useInView } from 'framer-motion'
+import { ArrowRight, TrainFront } from 'lucide-react'
+import { APPS } from '../data/content'
 
-interface AppBarProps {
-  selectedId: string | null
-  onSelect: (id: string) => void
-}
+interface AppBarProps { selectedId: string | null; onSelect: (id: string) => void }
 
-export const AppBar: React.FC<AppBarProps> = ({ selectedId, onSelect }) => {
+const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
+const SplitFlapText = ({ value, delay = 0 }: { value: string; delay?: number }) => {
+  const ref = useRef<HTMLSpanElement>(null)
+  const isInView = useInView(ref, { once: true, amount: 0.4 })
+  const [display, setDisplay] = useState(value)
+
+  useEffect(() => {
+    if (!isInView || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let tick = 0
+    const start = window.setTimeout(() => {
+      const timer = window.setInterval(() => {
+        tick += 1
+        const revealed = Math.floor(tick / 2)
+        setDisplay(value.split('').map((character, index) => {
+          if (character === ' ' || index < revealed) return character
+          return GLYPHS[(tick + index * 7) % GLYPHS.length]
+        }).join(''))
+        if (revealed >= value.length) {
+          setDisplay(value)
+          window.clearInterval(timer)
+        }
+      }, 48)
+    }, delay)
+    return () => window.clearTimeout(start)
+  }, [delay, isInView, value])
+
   return (
-    <motion.div
-      className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 px-4"
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 1.1, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {APPS.map((app: AppProject, i: number) => {
-        const isSelected = selectedId === app.id
-        return (
-          <motion.button
-            key={app.id}
-            onClick={() => onSelect(app.id)}
-            className="group flex flex-col items-center gap-1.5 cursor-pointer outline-none"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.35, delay: 1.2 + i * 0.06, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-          >
-            {/* App icon */}
-            <motion.div
-              className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xs sm:text-sm tracking-tight ${
-                isSelected
-                  ? 'shadow-lg ring-2 ring-offset-2 ring-offset-stone-50 dark:ring-offset-stone-900'
-                  : 'shadow-md'
-              }`}
-              style={{
-                backgroundColor: app.color,
-                ...(isSelected ? { ['--tw-ring-color' as string]: app.color } : {}),
-              }}
-              whileHover={{ scale: 1.12, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              animate={isSelected ? { scale: 1.1 } : { scale: 1 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            >
-              {app.name.slice(0, 3)}
-            </motion.div>
-
-            {/* App label */}
-            <span className={`text-[10px] sm:text-[11px] font-medium transition-colors duration-200 ${
-              isSelected
-                ? 'text-stone-900 dark:text-stone-50'
-                : 'text-stone-400 dark:text-stone-500 group-hover:text-stone-600 dark:group-hover:text-stone-300'
-            }`}>
-              {app.tagline}
-            </span>
-          </motion.button>
-        )
-      })}
-    </motion.div>
+    <span ref={ref} className="split-flap" aria-label={value}>
+      <span aria-hidden="true">
+        {display.split('').map((character, index) => (
+          <span className="flap-character" key={index}>{character === ' ' ? '\u00a0' : character}</span>
+        ))}
+      </span>
+    </span>
   )
 }
+
+const statuses = ['À L’HEURE', 'EN SERVICE', 'EMBARQUEMENT', 'EN APPROCHE']
+
+export const AppBar = ({ selectedId, onSelect }: AppBarProps) => (
+  <div className="departure-board">
+    <div className="board-titlebar">
+      <span className="board-title"><TrainFront aria-hidden="true" /> Prochains départs</span>
+      <span className="board-clock" aria-label="Heure locale à Strasbourg">STRASBOURG · {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
+    </div>
+    <div className="board-columns" aria-hidden="true">
+      <span>Voie</span><span>Projet</span><span>Service</span><span>Départ</span><span />
+    </div>
+    <div className="board-rows">
+      {APPS.map((app, index) => (
+        <motion.button
+          key={app.id}
+          className={`departure-row ${selectedId === app.id ? 'is-selected' : ''}`}
+          onClick={() => onSelect(app.id)}
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.4, delay: index * 0.045 }}
+          aria-label={`Voie ${index + 1}. Découvrir ${app.name}, ${app.tagline}. ${statuses[index % statuses.length]}.`}
+        >
+          <span className="board-track">{String(index + 1).padStart(2, '0')}</span>
+          <span className="board-project"><SplitFlapText value={app.name} delay={index * 85} /></span>
+          <span className="board-service"><strong>{app.tagline}</strong><small>{app.category}</small></span>
+          <span className="board-status">{statuses[index % statuses.length]}</span>
+          <span className="board-arrow" aria-hidden="true"><ArrowRight /></span>
+        </motion.button>
+      ))}
+    </div>
+  </div>
+)

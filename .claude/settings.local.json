@@ -10,7 +10,15 @@
       "Bash(npm search:*)",
       "WebFetch(domain:www.npmjs.com)",
       "Bash(npm info:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:www.magnific.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:bedimcode.github.io)",
+      "Bash(gh api:*)",
+      "WebSearch",
+      "WebFetch(domain:dev.to)",
+      "WebFetch(domain:www.sarasoueidan.com)"
     ]
   }
 }
