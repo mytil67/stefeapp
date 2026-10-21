@@ -36,7 +36,12 @@ export const Experiments = () => {
         <h2 id="experiences-title">Expériences,<br />pas promesses.</h2>
         <span>Un petit laboratoire pour montrer comment une idée peut devenir une interface vivante.</span>
       </div>
-      <div className="experiments-grid">
+      <div
+        className="experiments-grid"
+        id={`panel-${active.id}`}
+        role="tabpanel"
+        aria-labelledby={`tab-${active.id}`}
+      >
         <div className="experiment-stage" data-example={active.id} aria-live="polite">
           <div className="stage-glow" />
           <div className="stage-orbits"><i /><i /><i /><b /></div>
@@ -53,9 +58,11 @@ export const Experiments = () => {
             {EXAMPLES.map((example) => (
               <button
                 key={example.id}
+                id={`tab-${example.id}`}
                 type="button"
                 role="tab"
                 aria-selected={activeId === example.id}
+                aria-controls={`panel-${example.id}`}
                 className={activeId === example.id ? 'is-active' : ''}
                 onClick={() => setActiveId(example.id)}
               >

@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --plum: #3b123f;
   --plum-deep: #1a1028;
@@ -9,9 +5,10 @@
   --board: #0e1320;
   --board-raised: #171d2b;
   --sand: #f7eadb;
-  --paper: #f4e9df;
-  --ink: #26172c;
-  --muted: #756978;
+  --paper: #eee2d6;
+  --ink: #21152b;
+  --muted: #594b5c;
+  --accent-kicker: #ab4f61;
   --pink: #e96c89;
   --coral: #ff825f;
   --amber: #ffbd55;
@@ -20,7 +17,7 @@
   color-scheme: light;
 }
 
-.dark { --paper: #160f1e; --ink: #f8ecdf; --muted: #b8a9b8; color-scheme: dark; }
+.dark { --paper: #160f1e; --ink: #f8ecdf; --muted: #b8a9b8; --accent-kicker: var(--pink); color-scheme: dark; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; }
 html { scroll-behavior: smooth; background: var(--plum-deep); }
@@ -327,7 +324,6 @@ a { text-decoration: none; }
 @keyframes river-crossing { to { left: 105%; } }
 
 .site-shell[data-month="6"] .summer-firework { display: block; position: absolute; top: 19%; left: 70%; width: 2px; height: 2px; border-radius: 50%; background: #ffd47a; box-shadow: 0 -20px 0 -1px #ffd47a, 14px -14px 0 -1px #ff9eae, 20px 0 0 -1px #ffd47a, 14px 14px 0 -1px #ff9eae, 0 20px 0 -1px #ffd47a, -14px 14px 0 -1px #ff9eae, -20px 0 0 -1px #ffd47a, -14px -14px 0 -1px #ff9eae; opacity: 0; animation: summer-firework 18s ease-out 5s infinite; }
-.summer-firework i { display: none; }
 @keyframes summer-firework { 0%, 75%, 100% { opacity: 0; transform: scale(.35); } 80% { opacity: .78; transform: scale(1); } 88% { opacity: 0; transform: scale(1.25); } }
 
 .site-shell[data-month="7"] .august-heat-haze { display: block; position: absolute; inset: 35% 0 14%; background: repeating-linear-gradient(0deg, transparent 0 22px, rgba(255,231,183,.11) 23px 25px); mix-blend-mode: screen; opacity: .35; animation: heat-shimmer 5s ease-in-out infinite alternate; }
@@ -401,12 +397,7 @@ a { text-decoration: none; }
 .departures-heading { position: relative; width: min(820px, 92%); margin: -26px auto 26px; padding: 13px 24px 16px; border: 1px solid rgba(255,255,255,.16); border-radius: 12px; background: #101521; box-shadow: 0 22px 55px rgba(0,0,0,.46), 0 0 0 7px rgba(255,255,255,.025); text-align: center; }
 .departures-kicker { color: var(--amber) !important; font-size: 8px !important; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; }
 .departures-heading h2 { margin: 4px 0 0; font-family: Anton, Impact, sans-serif; font-size: clamp(30px, 4vw, 50px); font-weight: 400; line-height: 1; letter-spacing: .12em; text-transform: uppercase; }
-.departures-heading > p:last-child { display: none; }
 .departure-board { width: min(1240px, 100%); margin: 0 auto; padding: 18px; border: 1px solid rgba(255,255,255,.13); border-radius: 20px; background: var(--board); box-shadow: 0 26px 80px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.05); }
-.board-titlebar { display: none; }
-.board-title { display: inline-flex; align-items: center; gap: 14px; font-family: Anton, Impact, sans-serif; font-size: clamp(25px, 3vw, 40px); letter-spacing: .11em; text-transform: uppercase; }
-.board-title svg { width: 27px; height: 27px; color: var(--amber); }
-.board-clock { color: #9f96a7; font-size: 10px; font-weight: 800; letter-spacing: .15em; white-space: nowrap; }
 .board-columns, .departure-row { display: grid; grid-template-columns: 76px 1fr 1.8fr 1fr 48px; align-items: center; gap: 10px; }
 .board-columns { min-height: 42px; padding: 0 12px; color: #706b78; font-size: 9px; font-weight: 850; letter-spacing: .16em; text-transform: uppercase; }
 .board-rows { display: grid; gap: 7px; }
@@ -444,15 +435,15 @@ a { text-decoration: none; }
 .detail-copy svg { width: 15px; }
 
 /* IA experiments — small interactive studies, not a sales pitch. */
-.experiments { position: relative; overflow: hidden; padding: clamp(82px, 11vw, 150px) clamp(28px, 7vw, 100px); background: #eee2d6; color: #21152b; }
-.experiments::before { content: 'IA'; position: absolute; right: 4vw; top: 3vw; color: rgba(58,18,63,.055); font-family: Anton, Impact, sans-serif; font-size: min(34vw, 430px); line-height: .7; pointer-events: none; }
+.experiments { position: relative; overflow: hidden; padding: clamp(82px, 11vw, 150px) clamp(28px, 7vw, 100px); background: var(--paper); color: var(--ink); transition: background .3s, color .3s; }
+.experiments::before { content: 'IA'; position: absolute; right: 4vw; top: 3vw; color: color-mix(in srgb, var(--ink) 6%, transparent); font-family: Anton, Impact, sans-serif; font-size: min(34vw, 430px); line-height: .7; pointer-events: none; }
 .experiments-heading, .experiments-grid { position: relative; z-index: 1; }
 .experiments-heading { display: grid; gap: 12px; max-width: 720px; margin-bottom: clamp(38px, 6vw, 74px); }
-.experiments-heading > p, .experiment-label { color: #ab4f61; font-size: 10px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
+.experiments-heading > p, .experiment-label { color: var(--accent-kicker); font-size: 10px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
 .experiments-heading h2 { font-family: Anton, Impact, sans-serif; font-size: clamp(52px, 8vw, 118px); font-weight: 400; line-height: .84; letter-spacing: -.025em; text-transform: uppercase; }
-.experiments-heading > span { max-width: 440px; color: #594b5c; font-size: 16px; font-weight: 600; line-height: 1.55; }
+.experiments-heading > span { max-width: 440px; color: var(--muted); font-size: 16px; font-weight: 600; line-height: 1.55; }
 .experiments-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr); gap: clamp(26px, 6vw, 92px); align-items: center; }
-.experiment-stage { position: relative; min-height: clamp(300px, 34vw, 450px); overflow: hidden; border: 1px solid rgba(40,18,49,.16); border-radius: 24px; background: #151025; box-shadow: 0 28px 70px rgba(49,22,51,.22); isolation: isolate; }
+.experiment-stage { position: relative; min-height: clamp(300px, 34vw, 450px); overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 24px; background: #151025; box-shadow: 0 28px 70px rgba(49,22,51,.22); isolation: isolate; }
 .stage-glow { position: absolute; left: 50%; top: 50%; width: 58%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #ffbc72 0 3%, #e76b8a 25%, #6244b3 52%, transparent 70%); filter: blur(1px); opacity: .84; transform: translate(-50%,-50%); animation: stage-pulse 7s ease-in-out infinite alternate; }
 .stage-orbits { position: absolute; inset: 0; display: grid; place-items: center; }
 .stage-orbits i { position: absolute; width: 26%; aspect-ratio: 1; border: 1px solid rgba(255,240,224,.56); border-radius: 50%; animation: orbit-spin 18s linear infinite; }
@@ -461,13 +452,13 @@ a { text-decoration: none; }
 .stage-orbits b { width: 12px; height: 12px; border-radius: 50%; background: #fff1dc; box-shadow: 0 0 16px #fff1dc; }
 .stage-caption { position: absolute; left: 22px; bottom: 18px; color: rgba(255,245,232,.9); font-size: 10px; font-weight: 850; letter-spacing: .15em; text-transform: uppercase; }
 .stage-cursor, .stage-bars { display: none; }
-.experiment-copy > svg { width: 34px; height: 34px; margin-bottom: 22px; color: #a34358; }
+.experiment-copy > svg { width: 34px; height: 34px; margin-bottom: 22px; color: var(--accent-kicker); }
 .experiment-copy h3 { max-width: 400px; margin: 9px 0 16px; font-family: Anton, Impact, sans-serif; font-size: clamp(34px, 4vw, 58px); font-weight: 400; line-height: .92; letter-spacing: -.02em; text-transform: uppercase; }
-.experiment-copy > p:not(.experiment-label) { max-width: 390px; color: #594b5c; font-size: 16px; font-weight: 600; line-height: 1.55; }
+.experiment-copy > p:not(.experiment-label) { max-width: 390px; color: var(--muted); font-size: 16px; font-weight: 600; line-height: 1.55; }
 .experiment-tabs { display: grid; gap: 8px; margin-top: 30px; }
-.experiment-tabs button { width: fit-content; padding: 6px 0; border-bottom: 1px solid rgba(45,24,53,.16); color: #776578; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-align: left; cursor: pointer; transition: color .2s, transform .2s; }
-.experiment-tabs button:hover, .experiment-tabs button.is-active { color: #26172c; transform: translateX(7px); }
-.experiment-tabs button:focus-visible { outline: 3px solid #ab4f61; outline-offset: 3px; }
+.experiment-tabs button { width: fit-content; padding: 6px 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-align: left; cursor: pointer; transition: color .2s, transform .2s; }
+.experiment-tabs button:hover, .experiment-tabs button.is-active { color: var(--ink); transform: translateX(7px); }
+.experiment-tabs button:focus-visible { outline: 3px solid var(--accent-kicker); outline-offset: 3px; }
 @keyframes stage-pulse { to { opacity: 1; transform: translate(-50%,-50%) scale(1.12); } }
 @keyframes orbit-spin { to { transform: rotate(360deg); } }
 
@@ -502,7 +493,6 @@ a { text-decoration: none; }
 
 @media (max-width: 900px) {
   .hero-text h1 { font-size: clamp(104px, 27vw, 230px); }
-  .city-svg { /* slightly shift on medium screens */ }
   .board-columns, .departure-row { grid-template-columns: 62px 1fr 1.35fr 42px; }
   .board-columns span:nth-child(4), .board-status { display: none; }
   .detail-layout { grid-template-columns: 1fr; gap: 36px; margin-top: 50px; }
@@ -530,19 +520,14 @@ a { text-decoration: none; }
   .back-to-top { right: 14px; bottom: 16px; width: 52px; height: 52px; border-radius: 16px; }
   .hero-center-actions { flex-direction: row; gap: 12px; }
   .hero-contact-cta { font-size: 11px; padding: 9px 16px; }
-  .city-svg { inset: -5% 0; width: 100%; height: 108%; }
   .departures-section { padding: 20px 12px 95px; }
-  .departures-heading { margin-top: -20px; }
-  .departures-heading { padding: 0 14px; }
+  .departures-heading { margin-top: -20px; padding: 0 14px; }
   .departures-heading h2 { font-size: 11.5vw; letter-spacing: .06em; }
   .departure-board { padding: 9px; border-radius: 14px; }
-  .board-titlebar { min-height: 65px; padding: 0 12px; }
-  .board-title { font-size: 21px; letter-spacing: .07em; }
   .experiments { padding: 78px 24px; }
   .experiments-grid { grid-template-columns: 1fr; gap: 40px; }
   .experiment-stage { min-height: 310px; border-radius: 18px; }
   .experiments-heading h2 { font-size: clamp(48px, 15vw, 76px); }
-  .board-clock { display: none; }
   .board-columns, .departure-row { grid-template-columns: 45px 96px minmax(0, 1fr) 32px; gap: 7px; }
   .board-columns { padding: 0 7px; }
   .departure-row { min-height: 68px; padding: 7px; }

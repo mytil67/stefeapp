@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { ArrowRight, TrainFront } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { APPS } from '../data/content'
 
 interface AppBarProps { selectedId: string | null; onSelect: (id: string) => void }
@@ -15,8 +15,9 @@ const SplitFlapText = ({ value, delay = 0 }: { value: string; delay?: number }) 
   useEffect(() => {
     if (!isInView || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     let tick = 0
+    let timer: number | undefined
     const start = window.setTimeout(() => {
-      const timer = window.setInterval(() => {
+      timer = window.setInterval(() => {
         tick += 1
         const revealed = Math.floor(tick / 2)
         setDisplay(value.split('').map((character, index) => {
@@ -29,7 +30,10 @@ const SplitFlapText = ({ value, delay = 0 }: { value: string; delay?: number }) 
         }
       }, 48)
     }, delay)
-    return () => window.clearTimeout(start)
+    return () => {
+      window.clearTimeout(start)
+      if (timer !== undefined) window.clearInterval(timer)
+    }
   }, [delay, isInView, value])
 
   return (
@@ -47,10 +51,6 @@ const statuses = ['À L’HEURE', 'EN SERVICE', 'EMBARQUEMENT', 'EN APPROCHE']
 
 export const AppBar = ({ selectedId, onSelect }: AppBarProps) => (
   <div className="departure-board">
-    <div className="board-titlebar">
-      <span className="board-title"><TrainFront aria-hidden="true" /> Prochains départs</span>
-      <span className="board-clock" aria-label="Heure locale à Strasbourg">STRASBOURG · {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
-    </div>
     <div className="board-columns" aria-hidden="true">
       <span>Voie</span><span>Projet</span><span>Service</span><span>Départ</span><span />
     </div>

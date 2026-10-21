@@ -30,7 +30,6 @@ export default function App() {
           <div className="departures-heading">
             <p className="departures-kicker">STRASBOURG · QUAI NUMÉRIQUE</p>
             <h2 id="work-title">Destinations numériques</h2>
-            <p>Chaque départ mène à un produit pensé pour le terrain.</p>
           </div>
           <AppBar selectedId={selectedApp} onSelect={setSelectedApp} />
         </section>

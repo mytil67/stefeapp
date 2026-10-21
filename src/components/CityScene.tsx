@@ -1,18 +1,18 @@
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import { type CSSProperties, useEffect, useRef } from 'react'
-import cityscape from '../assets/strasbourg-sunset.png'
-import januaryCityscape from '../assets/strasbourg-january.png'
-import februaryCityscape from '../assets/strasbourg-february.png'
-import marchCityscape from '../assets/strasbourg-march.png'
-import aprilCityscape from '../assets/strasbourg-april.png'
-import mayCityscape from '../assets/strasbourg-may.png'
-import juneCityscape from '../assets/strasbourg-june.png'
-import julyCityscape from '../assets/strasbourg-july.png'
-import augustCityscape from '../assets/strasbourg-august.png'
-import septemberCityscape from '../assets/strasbourg-september.png'
-import octoberCityscape from '../assets/strasbourg-october.png'
-import novemberCityscape from '../assets/strasbourg-november.png'
-import decemberCityscape from '../assets/strasbourg-december.png'
+import cityscape from '../assets/strasbourg-sunset.webp'
+import januaryCityscape from '../assets/strasbourg-january.webp'
+import februaryCityscape from '../assets/strasbourg-february.webp'
+import marchCityscape from '../assets/strasbourg-march.webp'
+import aprilCityscape from '../assets/strasbourg-april.webp'
+import mayCityscape from '../assets/strasbourg-may.webp'
+import juneCityscape from '../assets/strasbourg-june.webp'
+import julyCityscape from '../assets/strasbourg-july.webp'
+import augustCityscape from '../assets/strasbourg-august.webp'
+import septemberCityscape from '../assets/strasbourg-september.webp'
+import octoberCityscape from '../assets/strasbourg-october.webp'
+import novemberCityscape from '../assets/strasbourg-november.webp'
+import decemberCityscape from '../assets/strasbourg-december.webp'
 
 const MONTHLY_CITYSCAPES: Partial<Record<number, string>> = {
   0: januaryCityscape,
@@ -28,6 +28,8 @@ const MONTHLY_CITYSCAPES: Partial<Record<number, string>> = {
   10: novemberCityscape,
   11: decemberCityscape,
 }
+
+const BLOOM_LAYERS = ['a', 'b', 'c'] as const
 
 function spawnBirds(container: HTMLDivElement) {
   container.innerHTML = ''
@@ -119,27 +121,16 @@ export const CityScene = ({ selectedMonth }: CitySceneProps) => {
         />
       </AnimatePresence>
       <div className="cityscape-shade" aria-hidden="true" />
-      <motion.img
-        className="window-bloom window-bloom--a"
-        src={activeCityscape}
-        alt=""
-        aria-hidden="true"
-        style={{ y: cityY, scale: 1.08 }}
-      />
-      <motion.img
-        className="window-bloom window-bloom--b"
-        src={activeCityscape}
-        alt=""
-        aria-hidden="true"
-        style={{ y: cityY, scale: 1.08 }}
-      />
-      <motion.img
-        className="window-bloom window-bloom--c"
-        src={activeCityscape}
-        alt=""
-        aria-hidden="true"
-        style={{ y: cityY, scale: 1.08 }}
-      />
+      {BLOOM_LAYERS.map((layer) => (
+        <motion.img
+          key={layer}
+          className={`window-bloom window-bloom--${layer}`}
+          src={activeCityscape}
+          alt=""
+          aria-hidden="true"
+          style={{ y: cityY, scale: 1.08 }}
+        />
+      ))}
       <div className="season-particles" aria-hidden="true">
         {PARTICLES.map((particle, index) => (
           <span
@@ -161,7 +152,7 @@ export const CityScene = ({ selectedMonth }: CitySceneProps) => {
         <div className="april-drizzle" />
         <div className="may-bee" />
         <div className="river-boat"><i /></div>
-        <div className="summer-firework"><i /><i /></div>
+        <div className="summer-firework" />
         <div className="august-heat-haze" />
         <div className="river-canoe"><i /></div>
         <div className="migration-flock"><i /><i /><i /><i /><i /></div>

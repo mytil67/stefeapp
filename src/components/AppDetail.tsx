@@ -37,7 +37,7 @@ export const AppDetail = ({ selectedId, onClose }: AppDetailProps) => {
 
   return <AnimatePresence>{app && (
     <motion.div className="detail-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <motion.article ref={panelRef} onKeyDown={trapFocus} className={`detail-panel detail-panel--${app.tone}`} role="dialog" aria-modal="true" aria-labelledby="detail-title" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', stiffness: 260, damping: 28 }}>
+      <motion.article ref={panelRef} onKeyDown={trapFocus} className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', stiffness: 260, damping: 28 }}>
         <button ref={closeRef} className="detail-close" onClick={onClose} aria-label="Fermer"><X /></button>
         <div className="detail-titlebar"><span>Carte d’embarquement numérique</span><span>STRASBOURG · VOIE {String(projectIndex).padStart(2, '0')}</span></div>
         <div className="detail-code">DESTINATION · {app.id.toUpperCase()}</div>
