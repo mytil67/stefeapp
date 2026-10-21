@@ -25,7 +25,7 @@ export const Navbar = ({ theme, onToggleTheme, currentMonth, selectedMonth, onSe
   <header className={`topbar ${scrolled ? 'scrolled' : ''}`}>
     <nav className="topbar-right">
       <a href="#realisations">Projets</a>
-      <a href="#experiences">Expériences</a>
+      <a href="#experiences">NoDrive</a>
       <a href="#contact">Contact</a>
       <AmbiencePicker currentMonth={currentMonth} selectedMonth={selectedMonth} onSelect={onSelectMonth} />
       <button onClick={onToggleTheme} aria-label="Basculer le thème" className="theme-toggle">

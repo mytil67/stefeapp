@@ -5,9 +5,19 @@ export interface AppProject {
   description: string
   category: string
   url?: string
+  github?: string
 }
 
 export const APPS: AppProject[] = [
+  {
+    id: 'nodrive',
+    name: 'NODRIVE',
+    tagline: 'Transfert chiffré éphémère',
+    description: 'Transfert de fichiers temporaire et chiffré de bout en bout (AES-256-GCM, PBKDF2 600 000 itérations) entre deux machines — sans compte, sans installation, via un code à 6 caractères ou en CLI. Suppression automatique dès le premier téléchargement.',
+    category: 'CRYPTO · OPEN SOURCE',
+    url: 'https://nodrive.cc',
+    github: 'https://github.com/mytil67/nodrive',
+  },
   {
     id: 'repa',
     name: 'REPA',

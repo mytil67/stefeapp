@@ -431,13 +431,15 @@ a { text-decoration: none; }
 .detail-layout { position: relative; z-index: 1; margin-top: 72px; display: grid; grid-template-columns: .9fr 1.1fr; gap: 70px; align-items: end; }
 .detail-layout h3 { margin-top: 12px; font-family: Anton, Impact, sans-serif; font-size: clamp(74px, 11vw, 150px); font-weight: 400; line-height: .72; letter-spacing: -.035em; text-transform: uppercase; }
 .detail-copy p { margin-top: 14px; color: #e5d9e4; font-size: clamp(16px, 1.7vw, 23px); line-height: 1.5; }
-.detail-copy a { margin-top: 25px; padding: 13px 17px; display: inline-flex; align-items: center; gap: 9px; border-radius: 999px; background: var(--amber); color: var(--night); font-size: 12px; font-weight: 800; }
+.detail-actions { margin-top: 25px; display: flex; flex-wrap: wrap; gap: 12px; }
+.detail-copy a { padding: 13px 17px; display: inline-flex; align-items: center; gap: 9px; border-radius: 999px; background: var(--amber); color: var(--night); font-size: 12px; font-weight: 800; transition: transform .2s, background .2s; }
+.detail-copy a.detail-link--secondary { border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.08); color: #f8ecdf; }
 .detail-copy a:hover { transform: translateY(-2px); }
 .detail-copy svg { width: 15px; }
 
-/* IA experiments — small interactive studies, not a sales pitch. */
+/* NoDrive spotlight */
 .experiments { position: relative; overflow: hidden; padding: clamp(82px, 11vw, 150px) clamp(28px, 7vw, 100px); background: var(--paper); color: var(--ink); transition: background .3s, color .3s; }
-.experiments::before { content: 'IA'; position: absolute; right: 4vw; top: 3vw; color: color-mix(in srgb, var(--ink) 6%, transparent); font-family: Anton, Impact, sans-serif; font-size: min(34vw, 430px); line-height: .7; pointer-events: none; }
+.experiments::before { content: 'NODRIVE'; position: absolute; right: 3vw; top: 3vw; color: color-mix(in srgb, var(--ink) 5.5%, transparent); font-family: Anton, Impact, sans-serif; font-size: min(21vw, 310px); line-height: .75; pointer-events: none; }
 .experiments-heading, .experiments-grid { position: relative; z-index: 1; }
 .experiments-heading { display: grid; gap: 12px; max-width: 720px; margin-bottom: clamp(38px, 6vw, 74px); }
 .experiments-heading > p, .experiment-label { color: var(--accent-kicker); font-size: 10px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
@@ -459,7 +461,12 @@ a { text-decoration: none; }
 .experiment-tabs { display: grid; gap: 8px; margin-top: 30px; }
 .experiment-tabs button { width: fit-content; padding: 6px 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-align: left; cursor: pointer; transition: color .2s, transform .2s; }
 .experiment-tabs button:hover, .experiment-tabs button.is-active { color: var(--ink); transform: translateX(7px); }
-.experiment-tabs button:focus-visible { outline: 3px solid var(--accent-kicker); outline-offset: 3px; }
+.experiment-tabs button:focus-visible, .experiment-cta:focus-visible { outline: 3px solid var(--accent-kicker); outline-offset: 3px; }
+.experiment-links { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; }
+.experiment-cta { padding: 11px 16px; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: var(--ink); color: var(--paper); font-size: 11px; font-weight: 800; letter-spacing: .04em; transition: transform .2s, opacity .2s; }
+.experiment-cta--ghost { border: 1px solid color-mix(in srgb, var(--ink) 28%, transparent); background: transparent; color: var(--ink); }
+.experiment-cta:hover { transform: translateY(-2px); }
+.experiment-cta svg { width: 14px; height: 14px; }
 @keyframes stage-pulse { to { opacity: 1; transform: translate(-50%,-50%) scale(1.12); } }
 @keyframes orbit-spin { to { transform: rotate(360deg); } }
 

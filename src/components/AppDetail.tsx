@@ -41,7 +41,22 @@ export const AppDetail = ({ selectedId, onClose }: AppDetailProps) => {
         <button ref={closeRef} className="detail-close" onClick={onClose} aria-label="Fermer"><X /></button>
         <div className="detail-titlebar"><span>Carte d’embarquement numérique</span><span>STRASBOURG · VOIE {String(projectIndex).padStart(2, '0')}</span></div>
         <div className="detail-code">DESTINATION · {app.id.toUpperCase()}</div>
-        <div className="detail-layout"><div><span className="detail-category">{app.tagline}</span><h3 id="detail-title">{app.name}</h3></div><div className="detail-copy"><span className="detail-ready">Le projet</span><p>{app.description}</p>{app.url && <a href={app.url} target="_blank" rel="noreferrer">Découvrir le projet <ArrowUpRight /></a>}</div></div>
+        <div className="detail-layout">
+          <div>
+            <span className="detail-category">{app.tagline}</span>
+            <h3 id="detail-title">{app.name}</h3>
+          </div>
+          <div className="detail-copy">
+            <span className="detail-ready">Le projet</span>
+            <p>{app.description}</p>
+            {(app.url || app.github) && (
+              <div className="detail-actions">
+                {app.url && <a href={app.url} target="_blank" rel="noreferrer">Découvrir le projet <ArrowUpRight /></a>}
+                {app.github && <a href={app.github} target="_blank" rel="noreferrer" className="detail-link--secondary">Code source GitHub <ArrowUpRight /></a>}
+              </div>
+            )}
+          </div>
+        </div>
       </motion.article>
     </motion.div>
   )}</AnimatePresence>
