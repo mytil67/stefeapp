@@ -2,6 +2,8 @@ import { KeyboardEvent as ReactKeyboardEvent, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, X } from 'lucide-react'
 import { APPS } from '../data/content'
+import { useScreenshots } from '../hooks/useScreenshots'
+import { ScreenshotGallery } from './ScreenshotGallery'
 
 interface AppDetailProps { selectedId: string | null; onClose: () => void }
 
@@ -10,6 +12,7 @@ export const AppDetail = ({ selectedId, onClose }: AppDetailProps) => {
   const closeRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLElement>(null)
   const projectIndex = app ? APPS.indexOf(app) + 1 : 0
+  const { screenshots } = useScreenshots(selectedId)
 
   useEffect(() => {
     if (!app) return
@@ -37,10 +40,29 @@ export const AppDetail = ({ selectedId, onClose }: AppDetailProps) => {
 
   return <AnimatePresence>{app && (
     <motion.div className="detail-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <motion.article ref={panelRef} onKeyDown={trapFocus} className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', stiffness: 260, damping: 28 }}>
+      <motion.article
+        ref={panelRef}
+        onKeyDown={trapFocus}
+        className="detail-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="detail-title"
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0, bottom: 0.35 }}
+        onDragEnd={(_, info) => {
+          if (info.offset.y > 110 || info.velocity.y > 500) onClose()
+        }}
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        exit={{ y: '100%' }}
+        transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+      >
+        <div className="detail-sheet-handle" aria-hidden="true" />
         <button ref={closeRef} className="detail-close" onClick={onClose} aria-label="Fermer"><X /></button>
-        <div className="detail-titlebar"><span>Carte d’embarquement numérique</span><span>STRASBOURG · VOIE {String(projectIndex).padStart(2, '0')}</span></div>
-        <div className="detail-code">DESTINATION · {app.id.toUpperCase()}</div>
+        <div className="detail-titlebar"><span>Dans les coulisses du projet</span><span>PORTFOLIO · PROJET {String(projectIndex).padStart(2, '0')}</span></div>
+        <div className="detail-code">RÉALISATION · {app.id.toUpperCase()}</div>
+        {screenshots.length > 0 && <ScreenshotGallery screenshots={screenshots} />}
         <div className="detail-layout">
           <div>
             <span className="detail-category">{app.tagline}</span>

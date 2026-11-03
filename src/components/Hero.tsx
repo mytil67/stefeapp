@@ -1,56 +1,45 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowDownRight, Mail } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, Code2, PenTool, WandSparkles } from 'lucide-react'
 import { CityScene } from './CityScene'
+import { APPS } from '../data/content'
 
-interface HeroProps { selectedMonth: number }
+interface HeroProps { selectedMonth: number; onSelectProject: (id: string) => void; onOpenContact: () => void }
 
-export const Hero = ({ selectedMonth }: HeroProps) => {
-  const { scrollY } = useScroll()
-  const copyY = useTransform(scrollY, [0, 700], [0, -35])
+const featuredIds = ['nodrive', 'bauhaus', 'repa']
+const disciplines = ['Développement', 'Exploration graphique', 'Outils métier']
 
-  return (
-  <section className="hero-wrap" aria-labelledby="hero-title">
-    <div className="hero">
-      <CityScene selectedMonth={selectedMonth} />
-      <div className="hero-content">
-      <motion.div
-        className="hero-text"
-        style={{ y: copyY }}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-      >
-        <h1 id="hero-title">Stefe</h1>
-        <p className="hero-vibe">Responsable informatique · Vibe codeuse</p>
-      </motion.div>
-      <motion.div
-        className="hero-bottom"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-      >
-        <div className="hero-meta hero-meta--tagline">
-          <span>STRASBOURG · FR</span>
-          <p className="hero-tagline">Le numérique, simplement utile.</p>
+export const Hero = ({ selectedMonth, onSelectProject, onOpenContact }: HeroProps) => (
+  <section className="portfolio-intro" aria-labelledby="hero-title">
+    <div className="portfolio-hero">
+      <div className="portfolio-copy">
+        <p className="portfolio-eyebrow"><span /> Portfolio personnel · Strasbourg</p>
+        <p className="portfolio-hello">Moi, c’est <strong>Stefe.</strong></p>
+        <h1 id="hero-title">Du caractère.<br />Du design.<br /><span>Et du code.</span></h1>
+        <p className="portfolio-description">Responsable informatique et créative, je conçois des univers graphiques et je développe des outils qui simplifient le quotidien.</p>
+        <div className="portfolio-actions">
+          <a className="portfolio-primary" href="#realisations">Explorer mes projets <ArrowDown aria-hidden="true" /></a>
+          <button className="portfolio-contact" type="button" onClick={onOpenContact}>On en parle ? <ArrowUpRight aria-hidden="true" /></button>
         </div>
-        <div className="hero-center-actions">
-          <a href="#realisations" className="hero-scroll" aria-label="Découvrir les réalisations">
-            <ArrowDownRight aria-hidden="true" />
-          </a>
-          <a href="mailto:stefe@stefe.app" className="hero-contact-cta">
-            <Mail aria-hidden="true" /> Me contacter
-          </a>
-        </div>
-        <div className="hero-meta hero-meta--intro">
-          <span>CE QUE JE FAIS</span>
-          <p className="hero-intro">
-            Je transforme les besoins du terrain en produits numériques clairs,
-            fiables et agréables à utiliser.
-          </p>
-        </div>
-      </motion.div>
+        <ul className="portfolio-skills" aria-label="Mes domaines de création">
+          <li><PenTool aria-hidden="true" /> Graphisme</li>
+          <li><Code2 aria-hidden="true" /> Développement</li>
+          <li><WandSparkles aria-hidden="true" /> Expérimentation</li>
+        </ul>
       </div>
+      <figure className="portfolio-art">
+        <div className="portfolio-art__scene"><CityScene selectedMonth={selectedMonth} /></div>
+        <figcaption><span>Mon point de départ : Strasbourg.</span><span>Un décor au fil des saisons</span></figcaption>
+      </figure>
+    </div>
+    <div className="portfolio-preview" aria-label="Quelques projets à découvrir">
+      <a className="portfolio-preview__label" href="#realisations"><span>La suite, c’est du concret.</span><strong>Mes projets <ArrowDown aria-hidden="true" /></strong></a>
+      {featuredIds.map((id, index) => {
+        const project = APPS.find((app) => app.id === id)!
+        return <button key={id} type="button" className="portfolio-project" onClick={() => onSelectProject(id)} aria-label={`Découvrir ${project.name} : ${project.tagline}`}>
+          <span className="portfolio-project__category">0{index + 1} / {disciplines[index]}</span>
+          <span className="portfolio-project__name">{project.name}<ArrowUpRight aria-hidden="true" /></span>
+          <span className="portfolio-project__description">{project.tagline}</span>
+        </button>
+      })}
     </div>
   </section>
-  )
-}
+)
